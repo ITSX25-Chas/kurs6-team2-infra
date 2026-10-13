@@ -12,7 +12,7 @@ Blue Team-arbete med GCP, Terraform, Headscale, Tailscale och K3s.
 Den senaste gemensamma anslutningsguiden kan alltid läsas direkt på GitHub:
 
 ```text
-https://github.com/itsx25-team2/kurs6-team2-infra/blob/main/docs/gemensam_anslutningsguide.md
+https://github.com/ITSX25-Chas/kurs6-team2-infra/blob/main/docs/gemensam_anslutningsguide.md
 ```
 
 Om repot redan finns lokalt kan senaste versionen läsas utan checkout, merge

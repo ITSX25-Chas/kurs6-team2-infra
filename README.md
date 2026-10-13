@@ -13,7 +13,7 @@ Syftet är att arbeta med molninfrastruktur i Google Cloud Platform (GCP), grans
 - Region: `europe-north2`
 - Terraform backend: Google Cloud Storage
 - GitHub-organisation: `itsx25-team2`
-- Repo: `itsx25-team2/kurs6-team2-infra`
+- Repo: `ITSX25-Chas/kurs6-team2-infra`
 
 ## Viktiga Filer
 
@@ -172,7 +172,7 @@ Kontrollera alltid namn och status - aldrig Secret-värden - enligt följande:
    samt `vars.CICD_SERVICE_ACCOUNT`.
 2. En lyckad `Deploy Infrastructure`-körning ska finnas efter Terraformändringar.
    Den senaste verifierade körningen från `main` slutfördes 2026-09-26:
-   [GitHub Actions #36246127653](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/36246127653).
+   [GitHub Actions #36246127653](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/36246127653).
 3. Pull request-kontrollen ska vara grön. Den verifierar Terraform-format och
    validering, men utför ingen deploy.
 4. Om WIF, Variables eller en Secret ändras ska teamet först granska ändringen,
