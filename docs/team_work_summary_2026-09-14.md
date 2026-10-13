@@ -108,19 +108,19 @@ commit-historiken.
 
 | Underlag | Resultat |
 | --- | --- |
-| [PR #34](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/34) | Första försöket med minimal brandväggsroll |
-| [PR #35](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/35) | Backlogg och riskdokumentation |
-| [PR #36](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/36) | Tillgänglig inbyggd IAM-roll efter projektbegränsning |
-| [PR #37](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/37) | Gemensam anslutningsguide och säkerhetsdokumentation |
-| [PR #38](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/38) | Synkroniserad backlogg efter slutkontroll |
-| [PR #39](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/39) | OS Login och jumphost-service account |
-| [PR #40](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/40) | Willis arbets- och instansdokumentation |
-| [Branch-deploy](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34824365603) | WIF och brandväggsändring lyckades |
-| [Deploy efter merge](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34825510839) | `main` lyckades |
-| [Test med inaktiverade nycklar](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34825821057) | WIF fungerade utan användbara nycklar |
-| [Sluttest efter radering](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34826524653) | WIF fungerade utan användarhanterade nycklar |
-| [Deploy efter OS Login](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34831901973) | PR #39 applicerades framgångsrikt från `main` |
-| [Deploy efter PR #40](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34861398773) | Senaste `main` verifierades framgångsrikt |
+| [PR #34](https://github.com/itsx25-team2/kurs6-team2-infra/pull/34) | Första försöket med minimal brandväggsroll |
+| [PR #35](https://github.com/itsx25-team2/kurs6-team2-infra/pull/35) | Backlogg och riskdokumentation |
+| [PR #36](https://github.com/itsx25-team2/kurs6-team2-infra/pull/36) | Tillgänglig inbyggd IAM-roll efter projektbegränsning |
+| [PR #37](https://github.com/itsx25-team2/kurs6-team2-infra/pull/37) | Gemensam anslutningsguide och säkerhetsdokumentation |
+| [PR #38](https://github.com/itsx25-team2/kurs6-team2-infra/pull/38) | Synkroniserad backlogg efter slutkontroll |
+| [PR #39](https://github.com/itsx25-team2/kurs6-team2-infra/pull/39) | OS Login och jumphost-service account |
+| [PR #40](https://github.com/itsx25-team2/kurs6-team2-infra/pull/40) | Willis arbets- och instansdokumentation |
+| [Branch-deploy](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34824365603) | WIF och brandväggsändring lyckades |
+| [Deploy efter merge](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34825510839) | `main` lyckades |
+| [Test med inaktiverade nycklar](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34825821057) | WIF fungerade utan användbara nycklar |
+| [Sluttest efter radering](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34826524653) | WIF fungerade utan användarhanterade nycklar |
+| [Deploy efter OS Login](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34831901973) | PR #39 applicerades framgångsrikt från `main` |
+| [Deploy efter PR #40](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34861398773) | Senaste `main` verifierades framgångsrikt |
 
 ## Aktuell säkerhetsstatus
 

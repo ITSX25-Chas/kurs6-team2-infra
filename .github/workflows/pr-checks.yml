@@ -28,3 +28,9 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
+
+      - name: Bootstrap Init
+        run: terraform -chdir=bootstrap init -backend=false
+
+      - name: Bootstrap Validate
+        run: terraform -chdir=bootstrap validate

@@ -1,7 +1,7 @@
 # Kurs 6 Team 2 Infra
 
 Detta repository innehåller grupp 2:s Terraform-baserade infrastruktur för Kurs
-6, vecka 4 och 5: Blue Team.
+6, vecka 4-6: Blue Team.
 
 Syftet är att arbeta med molninfrastruktur i Google Cloud Platform (GCP), granska Terraform-kod ur ett säkerhetsperspektiv och förbättra lösningen steg för steg via ett agilt arbetsflöde.
 
@@ -12,7 +12,8 @@ Syftet är att arbeta med molninfrastruktur i Google Cloud Platform (GCP), grans
 - Subnet: `10.0.2.0/24`
 - Region: `europe-north2`
 - Terraform backend: Google Cloud Storage
-- Repo: `Itzmejonny92/kurs6-team2-infra`
+- GitHub-organisation: `itsx25-team2`
+- Repo: `itsx25-team2/kurs6-team2-infra`
 
 ## Viktiga Filer
 
@@ -21,16 +22,18 @@ Syftet är att arbeta med molninfrastruktur i Google Cloud Platform (GCP), grans
 - [outputs.tf](outputs.tf): Outputs från team-modulen.
 - [terraform.tfvars](terraform.tfvars): Teamets projekt- och teaminställningar. Fältet `ssh_users` är kvar som äldre konfiguration men används inte av jumphosten efter OS Login-migreringen.
 - [backend.tf](backend.tf): Remote backend för teamets Terraform state.
-- [bootstrap/main.tf](bootstrap/main.tf): Bootstrap-resurser, bland annat state-bucket och CI/CD service account.
+- [bootstrap/main.tf](bootstrap/main.tf): Privilegierade bootstrap-resurser, bland annat state-bucket, CI/CD service account, WIF och projektets IAP-IAM.
 - [bootstrap/terraform.tfvars](bootstrap/terraform.tfvars): Projekt- och team-id för bootstrap.
 - [.github/workflows/pr-checks.yml](.github/workflows/pr-checks.yml): CI-kontroller för pull requests.
-- [.github/workflows/deploy.yml](.github/workflows/deploy.yml): Deploy-pipeline för main.
+- [.github/workflows/deploy.yml](.github/workflows/deploy.yml): Deploy-pipeline för relevanta root-Terraformändringar på main, med serialisering och väntetid på state-lås.
 - [docs/](docs/): Sammanfattningar, beslut och arbetsanteckningar.
-- [docs/gemensam_anslutningsguide.md](docs/gemensam_anslutningsguide.md): Gemensam säker guide för Git, GCP, Terraform, SSH och proxyanslutning.
+- [docs/gemensam_anslutningsguide.md](docs/gemensam_anslutningsguide.md): Gemensam säker guide för Git, GCP, Terraform, OS Login, Headscale/Tailscale, subnet routing och Split DNS. SOCKS5 dokumenteras endast som reservmetod.
 - [docs/product_backlog.md](docs/product_backlog.md): Backlog med säkerhetsrisker, förbättringar och status.
 - [docs/team_work_summary_2026-09-08.md](docs/team_work_summary_2026-09-08.md): Gemensam sammanfattning av dagens arbete, verifieringar och nästa steg.
 - [docs/team_work_summary_2026-09-14.md](docs/team_work_summary_2026-09-14.md): Gemensam sammanfattning av WIF, IAM, OS Login och övrigt säkerhetsarbete den 14 september.
 - [docs/team_work_summary_2026-09-15.md](docs/team_work_summary_2026-09-15.md): Gemensam sammanfattning av Metadata Service, Headscale, Tailscale och brandväggsarbetet den 15 september.
+- [docs/team_work_summary_2026-09-17.md](docs/team_work_summary_2026-09-17.md): Gemensam sammanfattning av `primary`, subnet routing, direkt routing och Split DNS den 17 september.
+- [docs/team_work_summary_2026-09-24.md](docs/team_work_summary_2026-09-24.md): Gemensam sammanfattning av MagicDNS-posten för `company-website` och dagens verifieringar.
 - [members/](members/): Personliga dokumentationsytor för gruppmedlemmarnas anteckningar, loggar och underlag.
 
 ## Arbetsflöde
@@ -65,6 +68,11 @@ GitHub Issues är teamets källa för det dagliga arbetet. [Produktbackloggen](d
 
 Backlogfilen synkroniseras inte automatiskt med GitHub Issues. Den som ändrar ett issue ansvarar därför för att kontrollera om även den sammanfattade backloggen behöver uppdateras.
 
+En medlem som ligger efter behöver inte mergea för att läsa senaste materialet.
+Kör `git fetch origin` och använd `git show origin/main:SÖKVÄG`, eller
+läs dokumentet direkt på GitHub. Detta ändrar inte medlemsbranchen eller
+arbetsfilerna. Fullständig rutin finns i den gemensamma anslutningsguiden.
+
 ## Brancher
 
 Följande member-branches finns för gruppen:
@@ -98,6 +106,11 @@ Exempel på säkerhetsområden att granska:
 - GitHub Actions autentiserar mot GCP med WIF och deploy har verifierats utan
   långlivade service account-nycklar.
 - Inga användarhanterade nycklar finns kvar för `team2-cicd`.
+- Projektets IAP-IAM förvaltas av privilegierad bootstrap; det vanliga CI-kontot
+  behåller sina begränsade Compute- och state-behörigheter.
+- Den separerade IAM-modellen och deploy-workflowet mergades via PR #75.
+  Efterföljande deploy från `main` lyckades, och både root och bootstrap gav
+  `No changes` i efterkontrollen.
 - State-bucketens tidigare publika `allAuthenticatedUsers`-bindning är
   borttagen.
 - Headscale-porten är begränsad till utbildarens reverse proxy och SSH-porten
@@ -113,12 +126,57 @@ Exempel på säkerhetsområden att granska:
 - Pull requests kräver två approvals.
 - `Format & Validate` krävs som statuscheck.
 - Gruppens member-branches finns på GitHub.
+- Direkt åtkomst till privata resurser och Spectre sker normalt via personliga
+  Tailscale-noder, annonserade subnet-rutter och Split DNS. SOCKS5 är endast en
+  avgränsad reservmetod.
 
 ## Viktigt
 
 Terraform state, credentials, privata nycklar och planfiler ska inte commitas.
 
 `.gitignore` skyddar mot vanliga Terraform- och credential-filer, men varje teammedlem ansvarar fortfarande för att kontrollera `git status` innan commit.
+
+## GitHub Actions: WIF, Variables och Secrets
+
+Deploy-workflowen autentiserar mot GCP med Workload Identity Federation (WIF).
+Det innebär att GitHub Actions får en kortlivad identitet under körningen i
+stället för att använda en långlivad service account-nyckel.
+
+### Variables
+
+Workflowen `.github/workflows/deploy.yml` läser två Repository Variables:
+
+- `WORKLOAD_IDENTITY_PROVIDER`: identifierar Team 2:s WIF-provider i GCP.
+- `CICD_SERVICE_ACCOUNT`: anger vilket GCP service account som CI/CD får
+  impersonera.
+
+Värdena är konfigurationsuppgifter och ska inte skrivas ut i issues, Discord
+eller dokumentation. Ändringar av dem ska gå via branch, pull request och
+granskning.
+
+### Secrets
+
+Vid kontrollen 2026-10-06 fanns inga Repository Secrets i infra-repot och
+deploy-workflowen innehåller inga referenser till `secrets.*`. Den tidigare
+`GCP_SA_KEY` är borttagen; WIF ersätter behovet av en långlivad GCP-nyckel.
+
+Om teamet senare behöver lägga till en Secret ska den ha ett dokumenterat syfte,
+en ansvarig ägare, en rotationsrutin och en återkallningsrutin. Secret-värdet
+får aldrig exponeras i Git, Actions-loggar, issues eller Discord.
+
+### Verifiering
+
+Kontrollera alltid namn och status - aldrig Secret-värden - enligt följande:
+
+1. `deploy.yml` ska ha `id-token: write` och använda `vars.WORKLOAD_IDENTITY_PROVIDER`
+   samt `vars.CICD_SERVICE_ACCOUNT`.
+2. En lyckad `Deploy Infrastructure`-körning ska finnas efter Terraformändringar.
+   Den senaste verifierade körningen från `main` slutfördes 2026-09-26:
+   [GitHub Actions #36246127653](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/36246127653).
+3. Pull request-kontrollen ska vara grön. Den verifierar Terraform-format och
+   validering, men utför ingen deploy.
+4. Om WIF, Variables eller en Secret ändras ska teamet först granska ändringen,
+   därefter köra rätt kontroll och dokumentera resultatet utan känsliga värden.
 
 ## Hantering av SSH-åtkomst och nycklar
 
@@ -160,5 +218,27 @@ Den fullständiga rutinen finns i
 - Terraform begränsar SSH på port 22 till instruktörsnätet `10.0.0.0/24`.
   Jonnys SSH-åtkomst via Tailnet till `team2-jumphost` har verifierats.
 - Workshopens steg 6 är mergat, driftsatt och liveverifierat.
-- Nästa moment är `primary`-instansen, subnet advertisement och routing i
-  PB-13/issue #51. ACL-policy följer i PB-14/issue #52.
+- `team2-primary` kör som `e2-micro` på `10.0.2.3` utan extern IP och använder
+  OS Login.
+- Subnet-rutterna `10.0.2.0/24` och `10.0.0.2/32` är annonserade, godkända och
+  verifierade från Jonnys klient.
+- Direkt routing utan subnet-router-SNAT är verifierad. `primary` såg klientens
+  Tailnet-IP `100.64.0.3`.
+- Spectre svarar via både `10.0.0.2` och
+  `spectre.itsx25.chas-lab.dev`. Split DNS går genom `dnsmasq` på jumphosten.
+- MagicDNS-posten `company-website.team2.arpa` pekar på primary-servern
+  `10.0.2.3` och är verifierad med namnuppslagning, ping och HTTP från Jonnys
+  WSL-klient.
+- Ändringar i Headscales `extra_records` kräver en omstart av tjänsten i den
+  installerade versionen. `systemctl reload` läser endast om ACL-policyn.
+- Den dokumenterade standardvägen är direkt åtkomst via Tailscale. Äldre
+  SOCKS5-instruktioner är märkta som historisk reservmetod.
+- Workshopens steg 7 och PB-13 är slutförda. Nästa moment är ACL-policy i
+  PB-14/issue #52.
+- Headscale ACL-policyn från PR #58 är aktiverad. Alla registrerade
+  teammedlemmar har tills vidare adminåtkomst för att underlätta kurslabben.
+  Policyn korrigerades till Headscale v2-syntax med avslutande `@` efter att
+  den första versionen fick kontrolltjänsten att starta om upprepade gånger.
+- PB-14 är fortsatt `In progress` tills rollback samt både tillåten och nekad
+  trafik har verifierats från minst två användare. Amin läggs till i policyn
+  efter personlig Headscale-registrering.

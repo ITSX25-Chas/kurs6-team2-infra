@@ -66,19 +66,19 @@ sammanfattning och checklista så att han kan komma ikapp.
 
 | PR | Bidrag | Resultat |
 | --- | --- | --- |
-| [#43](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/43) | Lasses tidigare arbetssammanfattningar | Mergad |
-| [#44](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/44) | Komplettering av OS Login-listan | Mergad och driftsatt |
-| [#45](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/45) | Första Headscale-regeln | Mergad, senare begränsad i #49 |
-| [#46](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/46) | Willis Tailscale-dokumentation | Mergad |
-| [#47](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/47) | Headscale-status i README | Mergad |
-| [#48](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/48) | Status för workshopens steg 5 | Mergad, konfliktfragment rättade i #49 |
-| [#49](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/49) | Tailnet-guide och säkra regler för steg 6 | Mergad, driftsatt och verifierad |
-| [#50](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/50) | Sammanfattning och checklista för Amin | Mergad |
+| [#43](https://github.com/itsx25-team2/kurs6-team2-infra/pull/43) | Lasses tidigare arbetssammanfattningar | Mergad |
+| [#44](https://github.com/itsx25-team2/kurs6-team2-infra/pull/44) | Komplettering av OS Login-listan | Mergad och driftsatt |
+| [#45](https://github.com/itsx25-team2/kurs6-team2-infra/pull/45) | Första Headscale-regeln | Mergad, senare begränsad i #49 |
+| [#46](https://github.com/itsx25-team2/kurs6-team2-infra/pull/46) | Willis Tailscale-dokumentation | Mergad |
+| [#47](https://github.com/itsx25-team2/kurs6-team2-infra/pull/47) | Headscale-status i README | Mergad |
+| [#48](https://github.com/itsx25-team2/kurs6-team2-infra/pull/48) | Status för workshopens steg 5 | Mergad, konfliktfragment rättade i #49 |
+| [#49](https://github.com/itsx25-team2/kurs6-team2-infra/pull/49) | Tailnet-guide och säkra regler för steg 6 | Mergad, driftsatt och verifierad |
+| [#50](https://github.com/itsx25-team2/kurs6-team2-infra/pull/50) | Sammanfattning och checklista för Amin | Mergad |
 
 ## Verifieringsbevis
 
-- [Deploy efter PR #49](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34983968830)
-- [Deploy efter PR #50](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34985255864)
+- [Deploy efter PR #49](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34983968830)
+- [Deploy efter PR #50](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34985255864)
 - Headscale health: HTTP 200 efter brandväggsändringen.
 - Tailscale: jumphosten och dagens fem medlemsenheter online.
 - SSH: verifierad från Jonnys arbetsstation till jumphosten via Tailnet.

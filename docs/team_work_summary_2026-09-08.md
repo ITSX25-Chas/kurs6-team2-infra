@@ -86,20 +86,20 @@ minsta möjliga behörighet för tjänsten.
 
 | PR | Resultat | Status |
 | --- | --- | --- |
-| [#17](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/17) | Produktbacklogg och arbetsflöde | Mergad |
-| [#18](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/18) | Migrering till WIF | Mergad |
-| [#19](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/19) | Fyra nya SSH-användare | Mergad |
-| [#20](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/20) | Blue Team-agenda och backloggstatus | Mergad |
-| [#21](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/21) | Riskanalys för service account-nycklar | Mergad |
-| [#22](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/22) | Medlemsytor och avslutande backloggstatus | Mergad |
-| [#23](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/23) | Uppdaterad närvaro i gruppens sammanfattning | Mergad |
-| [#24](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/24) | Kompletterad riskdokumentation | Mergad |
+| [#17](https://github.com/itsx25-team2/kurs6-team2-infra/pull/17) | Produktbacklogg och arbetsflöde | Mergad |
+| [#18](https://github.com/itsx25-team2/kurs6-team2-infra/pull/18) | Migrering till WIF | Mergad |
+| [#19](https://github.com/itsx25-team2/kurs6-team2-infra/pull/19) | Fyra nya SSH-användare | Mergad |
+| [#20](https://github.com/itsx25-team2/kurs6-team2-infra/pull/20) | Blue Team-agenda och backloggstatus | Mergad |
+| [#21](https://github.com/itsx25-team2/kurs6-team2-infra/pull/21) | Riskanalys för service account-nycklar | Mergad |
+| [#22](https://github.com/itsx25-team2/kurs6-team2-infra/pull/22) | Medlemsytor och avslutande backloggstatus | Mergad |
+| [#23](https://github.com/itsx25-team2/kurs6-team2-infra/pull/23) | Uppdaterad närvaro i gruppens sammanfattning | Mergad |
+| [#24](https://github.com/itsx25-team2/kurs6-team2-infra/pull/24) | Kompletterad riskdokumentation | Mergad |
 
 Viktiga verifieringar:
 
-- [WIF-test från member-branch](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34228835871)
-- [Första verifierade WIF-deployen från main](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34231222239)
-- [Deploy efter dokumentationsmerge](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34232416714)
+- [WIF-test från member-branch](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34228835871)
+- [Första verifierade WIF-deployen från main](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34231222239)
+- [Deploy efter dokumentationsmerge](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34232416714)
 
 ## Bidrag som syns i repot
 

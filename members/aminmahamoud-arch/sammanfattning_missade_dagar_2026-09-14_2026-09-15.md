@@ -1,10 +1,11 @@
-# Sammanfattning för Amin - 2026-09-14 och 2026-09-15
+# Sammanfattning för Amin - uppföljning till 2026-09-21
 
-Detta dokument sammanfattar de två Blue Team-dagar som Amin inte deltog i.
+Detta dokument sammanfattar Blue Team-arbetet den 14, 15, 17 och 21 september
+som Amin behöver följa upp.
 Syftet är att göra det möjligt att förstå gruppens beslut och ansluta den egna
 arbetsstationen utan att behöva göra om teamets gemensamma serverarbete.
 
-## Status före de två dagarna
+## Status före perioden
 
 Teamets Terraform-infrastruktur och CI/CD-pipeline fanns redan i GCP. GitHub
 Actions använde Workload Identity Federation (WIF), vilket gjorde att
@@ -47,30 +48,104 @@ långlivade service account-nycklar inte längre behövdes i GitHub Secrets.
 
 ### Brandvägg och steg 6
 
-PR #49 förbereder följande begränsningar enligt workshopens steg 6:
+PR #49 införde följande begränsningar enligt workshopens steg 6:
 
 - Headscale på TCP 8080 tillåts endast från utbildarens reverse proxy
   `10.0.0.2/32`.
 - SSH på TCP 22 tillåts endast från instruktörsnätet `10.0.0.0/24`.
 - Medlemmarnas fortsatta åtkomst sker via det krypterade Tailnet.
 
-Ändringarna ska inte betraktas som driftsatta förrän PR:n är granskad, mergad,
-Terraform-apply är godkänd och en efterkontroll har genomförts.
+Ändringarna är mergade, driftsatta och verifierade.
+
+## Arbete den 2026-09-17
+
+### Steg 7: primary och routing
+
+- `team2-primary` aktiverades som `e2-micro` på `10.0.2.3` utan extern IP och
+  med OS Login.
+- Jumphosten annonserar `10.0.2.0/24` och Spectre-adressen `10.0.0.2/32`.
+- Subnet routing, direkt routing utan SNAT och returroute verifierades.
+- Spectre-NAT gjordes persistent i Terraform.
+- `dnsmasq` och Headscale Split DNS konfigurerades så att
+  `spectre.itsx25.chas-lab.dev` löses till `10.0.0.2`.
+
+### Steg 8: Headscale ACL
+
+- PR #58 införde en första `policy.hujson`.
+- Teamet beslutade att alla registrerade medlemmar tills vidare ska ingå i
+  `group:admin` för att förenkla kursarbetet. Detta är ett medvetet undantag
+  från least privilege.
+- Den första policyversionen hade fel användarsyntax och fick Headscale att
+  krascha. Policyn korrigerades med avslutande `@`, validerades och tjänstens
+  health kontrollerades med HTTP 200.
+- Amins användare finns ännu inte. När registreringen är klar ska `amin@`
+  läggas till i policyn via en granskad PR.
+- PB-14 är fortfarande pågående eftersom nekad trafik och rollback behöver
+  verifieras.
+
+## Arbete den 2026-09-21
+
+### Primary, IAP och K3s
+
+- `team2-primary` uppgraderades till `e2-small` för att klara K3s och
+  applikationslasten bättre.
+- IAP Tunnel Access lades till för teamets verifierade OS Login-identiteter.
+- En brandväggsregel för IAP SSH lades till från Googles IAP-intervall
+  `35.235.240.0/20` till jumphost och primary.
+- K3s API på TCP 6443 tilläts från teamets privata subnet `10.0.2.0/24` till
+  `primary`.
+- Nätverkskoppling och target tags för K3s-brandväggen korrigerades och
+  verifierades genom PR #66-#70.
+- Headscale-policyn kompletterades så att den tillfälliga GitHub-runnern kan nå
+  K3s API genom den avsedda privata routen.
+
+### GitHub-organisation och repositorytransfer
+
+- Teamets gemensamma GitHub-organisation är `itsx25-team2`.
+- Infra-repot flyttades från Jonnys personliga konto till
+  `itsx25-team2/kurs6-team2-infra`.
+- Branches, Issues, pull requests, medlemmar, Actions-variabler och branch
+  protection följde med transfern.
+- Den lokala huvudklonen pekar nu på organisationens repositoryadress.
+- WIF uppdaterades och verifierades mot den nya repositoryidentiteten. Den
+  gamla personliga WIF-identiteten är borttagen.
+- En efterföljande bootstrap-plan visade `No changes`.
+- [PR #71](https://github.com/itsx25-team2/kurs6-team2-infra/pull/71)
+  innehåller den spårbara Terraform- och dokumentationsändringen och väntar på
+  två godkännanden.
+
+### Separat CI-observation
+
+Ett manuellt Actions-test från organisationsrepot bekräftade att WIF fungerade
+och att Terraform kunde läsa state och GCP-resurser. Körningen stoppades senare
+av att CI-kontot saknar rättighet att läsa projektets IAM-policy för
+`google_project_iam_member`. Det är ett separat behörighetsproblem och inte ett
+fel i repositorytransfern eller WIF.
 
 ## Det här behöver Amin göra
+
+### Viktigast först: godkänn organisationsinbjudan
+
+Amins medlemskap i `itsx25-team2` har status `pending`. Godkänn inbjudan på
+GitHub innan arbetet fortsätter. Kontrollera därefter att följande repository
+går att öppna:
+
+- [Infra-repot](https://github.com/itsx25-team2/kurs6-team2-infra)
+- [Applikationsrepot](https://github.com/itsx25-team2/company-website)
 
 ### 1. Läs gemensam dokumentation
 
 - [Projektets README](../../README.md)
 - [Gemensam anslutningsguide](../../docs/gemensam_anslutningsguide.md)
 - [Product Backlog](../../docs/product_backlog.md)
-- [PR #49](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/49)
+- [PR #49](https://github.com/itsx25-team2/kurs6-team2-infra/pull/49)
 
 ### 2. Synka din branch
 
 Kör från repots rot:
 
 ```bash
+git remote set-url origin https://github.com/itsx25-team2/kurs6-team2-infra.git
 git fetch origin
 git switch member/aminmahamoud-arch
 git pull --ff-only origin main
@@ -88,9 +163,10 @@ gcloud auth application-default login
 gcloud config set project itsx25-lab
 ```
 
-Amins verifierade Chas Academy-adress behöver läggas till i `os_admin_users`
-via en granskad pull request. Dela endast den publika SSH-nyckeln och aldrig den
-privata nyckeln.
+Amin saknas fortfarande i `os_admin_users`. Hans Chas Academy-adress och behov
+av administrativ OS Login ska verifieras innan den läggs till via en granskad
+pull request. Dela endast den publika SSH-nyckeln och aldrig den privata
+nyckeln.
 
 ### 4. Installera Tailscale lokalt
 
@@ -137,6 +213,17 @@ tailscale ping team2-jumphost
 En administratör kontrollerar därefter att `amin-workstation` ligger under
 användaren `amin` och är online.
 
+### 8. Acceptera och testa privata rutter
+
+```bash
+sudo tailscale set --accept-routes=true
+ping 10.0.2.3
+ping spectre.itsx25.chas-lab.dev
+```
+
+Meddela teamet när registreringen fungerar så att `amin@` kan läggas till i
+ACL-policyn och åtkomsten kan verifieras.
+
 ## Säkerhet att komma ihåg
 
 - Skapa inte någon lokal service account-nyckel.
@@ -145,4 +232,3 @@ användaren `amin` och är online.
 - Kör Headscale-administrationskommandon på jumphosten med `sudo`.
 - Använd `team2.itsx25.chas-lab.dev` för Headscale och
   `spectre.itsx25.chas-lab.dev` endast för Spectre-portalen.
-

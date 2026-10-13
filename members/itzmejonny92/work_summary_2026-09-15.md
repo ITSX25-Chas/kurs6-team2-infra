@@ -49,12 +49,12 @@ brandväggsregler samt att hålla gruppens GitHub-underlag spårbart.
 
 ## Pull requests och verifiering
 
-- [PR #49](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/49): steg 5,
+- [PR #49](https://github.com/itsx25-team2/kurs6-team2-infra/pull/49): steg 5,
   anslutningsguide och brandväggsregler för steg 6.
-- [Deploy efter PR #49](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34983968830): lyckad.
-- [PR #50](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/50): Amins
+- [Deploy efter PR #49](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34983968830): lyckad.
+- [PR #50](https://github.com/itsx25-team2/kurs6-team2-infra/pull/50): Amins
   sammanfattning och checklista.
-- [Deploy efter PR #50](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34985255864): lyckad.
+- [Deploy efter PR #50](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34985255864): lyckad.
 - Terraform formaterades och validerades före merge.
 - Livekontrollen visade workshopens avsedda källnät för port 22 och 8080.
 - Headscale health svarade HTTP 200 efter deploy.

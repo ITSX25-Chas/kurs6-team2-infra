@@ -1,0 +1,18 @@
+{
+  "groups": {
+    // Medvetet kurslabb-beslut: alla registrerade teammedlemmar har adminroll
+    // för att underlätta det gemensamma arbetet. Behörigheten bör omprövas om
+    // miljön används utanför labben. Amin läggs till efter registrering.
+    "group:admin": ["fajk@", "jonny@", "lasse@", "tim@", "willibroad@"]
+  },
+  "tagOwners": {
+    "tag:github-runner": ["github-ci@"]
+  },
+  "acls": [
+    // Tillåt admins att nå alla maskiner på alla portar
+    { "action": "accept", "src": ["group:admin"], "dst": ["*:*"] },
+    // Begränsa GitHub-runnern till K3s API och anslutningskontroll på primary
+    { "action": "accept", "src": ["tag:github-runner"], "dst": ["10.0.2.3:6443"] },
+    { "action": "accept", "src": ["tag:github-runner"], "proto": "icmp", "dst": ["10.0.2.3:*"] }
+  ]
+}

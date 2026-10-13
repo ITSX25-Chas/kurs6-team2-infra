@@ -7,6 +7,12 @@ gruppens Blue Team-arbete med GCP och Terraform.
 
 `member/larstorngrenchas`
 
+## Viktiga filer
+
+| Fil | Syfte |
+| --- | --- |
+| [Sammanfattning av missad dag 2026-09-17](sammanfattning_missad_dag_2026-09-17.md) | Steg 7, ACL-status och Lasses personliga verifieringschecklista. |
+
 ## Användning
 
 - Egna anteckningar och arbetssammanfattningar
@@ -19,6 +25,7 @@ gruppens Blue Team-arbete med GCP och Terraform.
 | Datum | Vad gjordes? | Nästa steg |
 | --- | --- | --- |
 | 2026-09-08 | Personlig dokumentationsyta skapad. | Dokumentera fortsatt säkerhetsgranskning av state-bucketen. |
+| 2026-09-17 | En sammanfattning och checklista lades till efter frånvaro. | Aktivera `accept-routes` och verifiera `primary`, Spectre och ACL-åtkomst. |
 
 ## Viktigt
 

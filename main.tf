@@ -35,6 +35,32 @@ resource "google_compute_subnetwork" "team" {
   network       = data.google_compute_network.team_vpc.id
 }
 
+resource "google_compute_firewall" "allow_iap_ssh" {
+  name    = "team2-allow-iap-ssh"
+  network = data.google_compute_network.team_vpc.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  source_ranges = ["35.235.240.0/20"]
+  target_tags   = ["jumphost", "primary"] # Lägger till båda för säkerhets skull
+}
+
+resource "google_compute_firewall" "allow_k3s" {
+  name    = "allow-team2-k3s"
+  network = data.google_compute_network.team_vpc.name
+
+  allow {
+    protocol = "tcp"
+    ports    = ["6443"]
+  }
+
+  source_ranges = ["10.0.2.0/24"]
+  target_tags   = ["primary"]
+}
+
 resource "google_compute_address" "jumphost" {
   name   = "team${var.team_id}-jumphost-ip"
   region = var.region
@@ -148,7 +174,7 @@ resource "google_compute_instance" "jumphost" {
 
 resource "google_compute_instance" "primary" {
   name         = "team${var.team_id}-primary"
-  machine_type = "e2-micro"
+  machine_type = "e2-small"
   zone         = local.primary_zone
 
   allow_stopping_for_update = true

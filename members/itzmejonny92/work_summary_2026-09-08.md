@@ -101,14 +101,14 @@ hålla GitHub Issues, backlogg och dokumentation synkroniserade.
 
 ## Samarbete och spårbarhet
 
-- [PR #17](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/17): produktbacklogg och arbetsflöde.
-- [PR #18](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/18): WIF-migrering.
-- [WIF-test på member-branch](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34228835871): lyckad autentisering, plan och apply.
-- [WIF-deploy från main](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34231222239): lyckad verifiering efter merge.
-- [PR #20](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/20): Blue Team-agenda och backloggstatus.
-- [PR #22](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/22): medlemsytor och avslutande backloggstatus, mergad.
-- [PR #23](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/23): uppdaterad närvaro i gruppens sammanfattning, mergad.
-- [PR #24](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/24): kompletterad riskdokumentation, mergad.
+- [PR #17](https://github.com/itsx25-team2/kurs6-team2-infra/pull/17): produktbacklogg och arbetsflöde.
+- [PR #18](https://github.com/itsx25-team2/kurs6-team2-infra/pull/18): WIF-migrering.
+- [WIF-test på member-branch](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34228835871): lyckad autentisering, plan och apply.
+- [WIF-deploy från main](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34231222239): lyckad verifiering efter merge.
+- [PR #20](https://github.com/itsx25-team2/kurs6-team2-infra/pull/20): Blue Team-agenda och backloggstatus.
+- [PR #22](https://github.com/itsx25-team2/kurs6-team2-infra/pull/22): medlemsytor och avslutande backloggstatus, mergad.
+- [PR #23](https://github.com/itsx25-team2/kurs6-team2-infra/pull/23): uppdaterad närvaro i gruppens sammanfattning, mergad.
+- [PR #24](https://github.com/itsx25-team2/kurs6-team2-infra/pull/24): kompletterad riskdokumentation, mergad.
 
 ## Kvarstående arbete
 

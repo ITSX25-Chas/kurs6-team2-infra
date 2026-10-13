@@ -1,3 +1,5 @@
-project_id  = "itsx25-lab"
-team_id     = 2
-github_repo = "owner/repository"
+project_id = "itsx25-lab"
+team_id    = 2
+github_repositories = [
+  "owner/repository",
+]

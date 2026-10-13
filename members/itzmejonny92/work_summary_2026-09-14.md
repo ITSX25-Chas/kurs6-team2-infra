@@ -44,13 +44,13 @@ arbetssätt för gruppen.
 
 ## Verifieringsbevis
 
-- [PR #36](https://github.com/Itzmejonny92/kurs6-team2-infra/pull/36)
-- [Lyckat branchtest](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34824365603)
-- [Lyckad deploy efter merge](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34825510839)
-- [Lyckat test med inaktiverade nycklar](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34825821057)
-- [Lyckat sluttest efter nyckelradering](https://github.com/Itzmejonny92/kurs6-team2-infra/actions/runs/34826524653)
-- [Issue #8](https://github.com/Itzmejonny92/kurs6-team2-infra/issues/8)
-- [Issue #9](https://github.com/Itzmejonny92/kurs6-team2-infra/issues/9)
+- [PR #36](https://github.com/itsx25-team2/kurs6-team2-infra/pull/36)
+- [Lyckat branchtest](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34824365603)
+- [Lyckad deploy efter merge](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34825510839)
+- [Lyckat test med inaktiverade nycklar](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34825821057)
+- [Lyckat sluttest efter nyckelradering](https://github.com/itsx25-team2/kurs6-team2-infra/actions/runs/34826524653)
+- [Issue #8](https://github.com/itsx25-team2/kurs6-team2-infra/issues/8)
+- [Issue #9](https://github.com/itsx25-team2/kurs6-team2-infra/issues/9)
 
 ## Kvarvarande uppföljning
 

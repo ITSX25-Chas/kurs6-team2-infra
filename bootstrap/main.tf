@@ -20,6 +20,10 @@ provider "google" {
   project = var.project_id
 }
 
+locals {
+  allowed_github_repositories = sort(tolist(var.github_repositories))
+}
+
 resource "random_id" "bucket_suffix" {
   byte_length = 4
 }
@@ -87,7 +91,10 @@ resource "google_iam_workload_identity_pool_provider" "github" {
     "attribute.repository" = "assertion.repository"
   }
 
-  attribute_condition = "assertion.repository == '${var.github_repo}'"
+  attribute_condition = join(" || ", [
+    for repository in local.allowed_github_repositories :
+    "assertion.repository == '${repository}'"
+  ])
 
   oidc {
     issuer_uri = "https://token.actions.githubusercontent.com"
@@ -95,13 +102,23 @@ resource "google_iam_workload_identity_pool_provider" "github" {
 }
 
 resource "google_service_account_iam_member" "cicd_workload_identity" {
+  for_each = var.github_repositories
+
   service_account_id = google_service_account.cicd.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/${var.github_repo}"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github.name}/attribute.repository/${each.value}"
 }
 
 resource "google_storage_bucket_iam_member" "cicd_state_access" {
   bucket = google_storage_bucket.terraform_state.name
   role   = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.cicd.email}"
+}
+
+# Project IAM stays in bootstrap so the regular CI identity cannot grant roles.
+resource "google_project_iam_member" "iap_tunnel_access" {
+  for_each = var.os_admin_users
+  project  = var.project_id
+  role     = "roles/iap.tunnelResourceAccessor"
+  member   = "user:${each.value}"
 }

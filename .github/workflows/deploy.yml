@@ -3,7 +3,15 @@ name: Deploy Infrastructure
 on:
   push:
     branches: [main]
+    paths:
+      - "*.tf"
+      - ".terraform.lock.hcl"
+      - ".github/workflows/deploy.yml"
   workflow_dispatch:
+
+concurrency:
+  group: terraform-production
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -35,7 +43,7 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -input=false -out=tfplan
+        run: terraform plan -input=false -lock-timeout=5m -out=tfplan
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
