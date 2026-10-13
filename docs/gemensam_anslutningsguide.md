@@ -37,7 +37,7 @@ ssh -V
 Klona repot första gången:
 
 ```bash
-git clone https://github.com/itsx25-team2/kurs6-team2-infra.git
+git clone https://github.com/ITSX25-Chas/kurs6-team2-infra.git
 cd kurs6-team2-infra
 git fetch origin
 git switch member/DIN_GITHUB_ANVANDARE
@@ -61,7 +61,7 @@ git show origin/main:docs/gemensam_anslutningsguide.md | less
 Samma material kan läsas direkt på GitHub:
 
 ```text
-https://github.com/itsx25-team2/kurs6-team2-infra/blob/main/docs/gemensam_anslutningsguide.md
+https://github.com/ITSX25-Chas/kurs6-team2-infra/blob/main/docs/gemensam_anslutningsguide.md
 ```
 
 Ingen checkout, merge eller ändring av arbetsfiler sker med `git show`.
