@@ -1,4 +1,4 @@
-project_id = "itsx25-lab"
+project_id = "itsx25-comerit"
 team_id    = 2
 
 ssh_users = [
