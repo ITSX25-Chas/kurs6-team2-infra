@@ -39,6 +39,22 @@ berör åtkomst, autentisering, reproducerbar drift och nästa workshopsteg.
 
 PB-02 har två GitHub issues eftersom Lasse också skapade en mer konkret observation om `allAuthenticatedUsers` i issue #13. Den bör hanteras tillsammans med PB-02/PB-07 i reviewarbetet.
 
+## Statusuppdatering 2026-10-15
+
+- PB-09 är fortsatt `In progress`. Team 2:s drift har flyttats till
+  `itsx25-comerit` och OS Login används över IAP.
+- Dennis har lämnat kursen. Hans direkta GitHub-åtkomst togs bort, och
+  [PR #88](https://github.com/ITSX25-Chas/kurs6-team2-infra/pull/88) tog bort
+  hans `compute.osAdminLogin`-behörighet från både `team2-jumphost` och
+  `team2-primary`. Efterföljande deploy var grön och rapporterade
+  `2 destroyed`.
+- Amin saknas fortfarande i den aktiva `os_admin_users`-listan. Innan en ny
+  behörighet läggs till ska teamet bedöma om vanlig `osLogin` räcker eller om
+  administrativ `osAdminLogin` behövs.
+- Den gemensamma anslutningsguiden uppdateras till IAP som standardväg. Den
+  tidigare Headscale/Tailscale-lösningen bevaras som historisk dokumentation
+  tills den har verifierats på nytt i Comerits miljö.
+
 PB-11 avslutades efter att teamet konstaterat att
 `uniform_bucket_level_access = true` är en säkerhetsförbättring som flyttar
 åtkomststyrningen till IAM. Frågan om explicit `public_access_prevention` kan
