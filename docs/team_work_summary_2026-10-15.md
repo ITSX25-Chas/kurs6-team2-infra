@@ -27,6 +27,10 @@ state-backend pekas om till Team 2:s nya resurser.
 6. Dennis, som har lämnat kursen, togs bort från infra-repots direkta
    collaborators. I [PR #88](https://github.com/ITSX25-Chas/kurs6-team2-infra/pull/88)
    togs hans identitet också bort från Terraform-konfigurationen.
+7. Lasse skickade Team 2:s Rules of Engagement (ROE) till utbildaren för
+   granskning. Dokumentet anger ramarna för det kommande Red Team-testet;
+   inget test påbörjas innan ROE har godkänts och den tilldelade målmiljön
+   har bekräftats.
 
 ## Verifiering
 
@@ -40,6 +44,8 @@ state-backend pekas om till Team 2:s nya resurser.
   `team2-jumphost` och `team2-primary`: `0 added, 0 changed, 2 destroyed`.
 - Dennis GitHub-konto `dhskymill` finns inte längre i infra-repots
   collaboratorlista.
+- ROE är inskickad till utbildaren. Teamet inväntar godkännande och eventuell
+  kompletterande information om målmiljö och kontaktväg.
 
 ## Säkerhet och arbetssätt
 
