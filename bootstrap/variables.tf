@@ -17,7 +17,6 @@ variable "os_admin_users" {
   description = "Google identities granted IAP tunnel access by privileged bootstrap"
   type        = set(string)
   default = [
-    "dennis.heimbert@chasacademy.se",
     "fajk.zhupa@chasacademy.se",
     "jonny.nguyen@chasacademy.se",
     "lars.torngren@chasacademy.se",
