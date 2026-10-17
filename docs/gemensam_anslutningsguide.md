@@ -1,13 +1,13 @@
 # Gemensam anslutningsguide för Team 2
 
 Den här guiden beskriver hur gruppmedlemmar arbetar med repot, autentiserar sig
-mot GCP, ansluter till Team 2:s Tailnet och når labbresurser genom teamets
-Headscale/Tailscale-lösning. Guiden innehåller inga hemligheter. Ersätt
-platshållare med dina egna lokala uppgifter.
+mot GCP och ansluter till Team 2:s VM:er i Comerits miljö. Guiden innehåller
+inga hemligheter. Ersätt platshållare med dina egna lokala uppgifter.
 
-> **Aktuell standard sedan 2026-09-17:** Spectre nås direkt via Tailscale,
-> annonserade subnet-rutter och Split DNS. SOCKS5-avsnitten längre ned är en
-> historisk reservmetod och behövs inte för normal åtkomst.
+> **Aktuell standard sedan 2026-10-15:** Administrativ åtkomst till Team 2:s
+> VM:er sker med OS Login via Google Cloud IAP. Headscale/Tailscale, Split DNS
+> och SOCKS5 längre ned beskriver den tidigare miljön och ska inte användas i
+> Comerits miljö innan de har byggts och verifierats på nytt.
 
 ## Säkerhetsregler
 
@@ -16,8 +16,6 @@ platshållare med dina egna lokala uppgifter.
   (WIF). En medlem behöver därför inte skapa eller spara `GCP_SA_KEY`.
 - Logga in lokalt med ditt eget Chas Academy-konto.
 - Den privata SSH-nyckeln ska endast finnas på din egen dator.
-- Auth-id:n från Headscale är tillfälliga och får inte delas eller sparas i
-  repot.
 - Commita aldrig credentials, privata nycklar, Terraform state eller planfiler.
 - Kontrollera alltid `git status` innan du committar.
 
@@ -107,93 +105,68 @@ Använd ditt eget skolkonto:
 
 ```bash
 gcloud auth login
-gcloud auth application-default login
-gcloud config set project itsx25-lab
+gcloud config set project itsx25-comerit
 gcloud auth list
 ```
 
-`gcloud auth login` används av Google Cloud CLI. Application Default
-Credentials används av Terraform lokalt. Detta är personliga, lokala
-inloggningar och inte en service account-nyckel.
+`gcloud auth login` används av Google Cloud CLI och IAP. Detta är en personlig,
+lokal inloggning och inte en service account-nyckel.
 
 ## 4. Initiera och kontrollera Terraform
 
 Kör från repots rot:
 
 ```bash
-terraform init
+terraform init -backend=false
 terraform fmt -check -recursive
 terraform validate
-terraform plan
 ```
 
-Läs alltid planen innan en ändring appliceras. Teamets normala driftsättning
-sker efter granskad pull request genom GitHub Actions och WIF. Kör inte
-`terraform apply` lokalt utan att gruppen har kommit överens om det.
+Teamets normala driftsättning sker efter granskad pull request genom GitHub
+Actions och WIF. Kör inte `terraform apply` lokalt. Kör inte heller
+`terraform init -migrate-state` lokalt i Comerits miljö; `-backend=false`
+används ovan enbart för lokal syntax- och konfigurationskontroll. State och
+ändringar hanteras av CI/CD-kontot enligt kursinstruktionen.
 
-## 5. Kontrollera din SSH-åtkomst
-
-Skapa ett eget SSH-nyckelpar om du saknar ett:
-
-```bash
-ssh-keygen -t ed25519 -C "DIN_CHAS_EPOST"
-```
-
-Dela endast innehållet i den publika filen, normalt
-`~/.ssh/id_ed25519.pub`. Dela aldrig `~/.ssh/id_ed25519`.
-
-Registrera den publika nyckeln i din personliga OS Login-profil:
-
-```bash
-gcloud compute os-login ssh-keys add \
-  --key-file="$HOME/.ssh/id_ed25519.pub"
-```
+## 5. Anslut säkert med OS Login och IAP
 
 Din Chas Academy-adress måste även finnas i `os_admin_users` i
-`variables.tf`. Ändringen ska gå via branch, pull request och granskning. Amin
-saknades i listan vid kontrollen den 2026-09-15 och följs upp i issue #15.
+`variables.tf`. Ändringen ska gå via branch, pull request och granskning.
 
 `roles/compute.osAdminLogin` ger administrativ åtkomst på VM:n. Teamet ska
 bedöma om en medlem bara behöver `roles/compute.osLogin` innan behörighet
 läggs till.
 
-## 6. Hämta jumphostens adress
+Comerit öppnar IAP-åtkomst för Team 2 efter första lyckade deployen. Anslut
+alltid med `--tunnel-through-iap`; vanlig SSH direkt mot en IP-adress är
+stängd i brandväggen.
 
-Efter `terraform init` kan adressen hämtas utan att läsa state-filen direkt:
-
-```bash
-JUMPHOST_IP=$(terraform output -raw jumphost_external_ip)
-printf '%s\n' "$JUMPHOST_IP"
-```
-
-Skriv inte ut eller dela andra värden från Terraform state.
-
-## 7. Anslut till jumphosten
-
-Efter att steg 6 driftsattes den 2026-09-15 är publik SSH begränsad till
-instruktörsnätet. En medlem ansluter därför normalt via Tailnet efter att den
-egna klienten registrerats enligt steg 8-11.
-
-Ta fram ditt OS Login-användarnamn:
+Anslut till jumphosten:
 
 ```bash
-gcloud compute os-login describe-profile \
-  --format="value(posixAccounts[0].username)"
+gcloud compute ssh team2-jumphost \
+  --project itsx25-comerit \
+  --zone europe-north2-b \
+  --tunnel-through-iap
 ```
 
-Anslut därefter till jumphosten via dess Tailnet-adress:
+Anslut direkt till primary när arbetsuppgiften kräver det:
 
 ```bash
-ssh -i "$HOME/.ssh/id_ed25519" DIN_OS_LOGIN_ANVANDARE@100.64.0.2
+gcloud compute ssh team2-primary \
+  --project itsx25-comerit \
+  --zone europe-north2-b \
+  --tunnel-through-iap
 ```
 
-Om nyckeln har en lösenfras kan den låsas upp lokalt först:
+Google Cloud hanterar OS Login-anslutningen. Dela aldrig privata nycklar,
+auth-tokens eller annat känsligt material.
 
-```bash
-ssh-add "$HOME/.ssh/id_ed25519"
-```
+## Historisk miljö: Headscale, Tailscale och SOCKS5
 
-Skicka aldrig lösenfrasen till någon annan.
+> Avsnitt 8-17 och den avslutande felsökningen nedan bevaras som historik från
+> `itsx25-lab`. Kör inte dessa kommandon mot de nya VM:erna förrän Team 2 har
+> beslutat att återinföra och verifiera lösningen i en egen granskad ändring.
 
 ## 8. Installera Tailscale lokalt
 
@@ -402,7 +375,7 @@ Kontrollera att sidan identifierar anslutningen som Team 2.
 3. Tryck `Ctrl+C`.
 4. Kontrollera vid behov att port `1080` inte längre är öppen.
 
-## Felsökning
+## Historisk felsökning för tidigare miljö
 
 - **`Permission denied (publickey)`:** kontrollera att du är inloggad med rätt
   Google-konto, att din publika nyckel finns i OS Login och att adressen finns

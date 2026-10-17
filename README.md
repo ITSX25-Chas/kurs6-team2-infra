@@ -7,12 +7,13 @@ Syftet är att arbeta med molninfrastruktur i Google Cloud Platform (GCP), grans
 
 ## Miljö
 
-- GCP-projekt: `itsx25-lab`
+- GCP-projekt: `itsx25-comerit`
 - Team ID: `2`
 - Subnet: `10.0.2.0/24`
 - Region: `europe-north2`
-- Terraform backend: Google Cloud Storage
-- GitHub-organisation: `itsx25-team2`
+- Terraform backend: Google Cloud Storage, Team 2:s tilldelade
+  Comerits-bucket
+- GitHub-organisation: `ITSX25-Chas`
 - Repo: `ITSX25-Chas/kurs6-team2-infra`
 
 ## Viktiga Filer
@@ -22,18 +23,26 @@ Syftet är att arbeta med molninfrastruktur i Google Cloud Platform (GCP), grans
 - [outputs.tf](outputs.tf): Outputs från team-modulen.
 - [terraform.tfvars](terraform.tfvars): Teamets projekt- och teaminställningar. Fältet `ssh_users` är kvar som äldre konfiguration men används inte av jumphosten efter OS Login-migreringen.
 - [backend.tf](backend.tf): Remote backend för teamets Terraform state.
-- [bootstrap/main.tf](bootstrap/main.tf): Privilegierade bootstrap-resurser, bland annat state-bucket, CI/CD service account, WIF och projektets IAP-IAM.
-- [bootstrap/terraform.tfvars](bootstrap/terraform.tfvars): Projekt- och team-id för bootstrap.
+- [bootstrap/main.tf](bootstrap/main.tf): Historisk bootstrap-konfiguration
+  från den tidigare miljön. Comerits grundresurser är redan förberedda och
+  bootstrap ska inte köras i den aktuella miljön.
+- [bootstrap/terraform.tfvars](bootstrap/terraform.tfvars): Historiska
+  bootstrap-inställningar som inte används för Comerits drift.
 - [.github/workflows/pr-checks.yml](.github/workflows/pr-checks.yml): CI-kontroller för pull requests.
 - [.github/workflows/deploy.yml](.github/workflows/deploy.yml): Deploy-pipeline för relevanta root-Terraformändringar på main, med serialisering och väntetid på state-lås.
 - [docs/](docs/): Sammanfattningar, beslut och arbetsanteckningar.
-- [docs/gemensam_anslutningsguide.md](docs/gemensam_anslutningsguide.md): Gemensam säker guide för Git, GCP, Terraform, OS Login, Headscale/Tailscale, subnet routing och Split DNS. SOCKS5 dokumenteras endast som reservmetod.
+- [docs/gemensam_anslutningsguide.md](docs/gemensam_anslutningsguide.md):
+  Gemensam säker guide för Git, GCP, Terraform, OS Login och SSH via IAP i
+  Comerits miljö. Tidigare Headscale/Tailscale- och SOCKS5-instruktioner är
+  markerade som historiska.
 - [docs/product_backlog.md](docs/product_backlog.md): Backlog med säkerhetsrisker, förbättringar och status.
 - [docs/team_work_summary_2026-09-08.md](docs/team_work_summary_2026-09-08.md): Gemensam sammanfattning av dagens arbete, verifieringar och nästa steg.
 - [docs/team_work_summary_2026-09-14.md](docs/team_work_summary_2026-09-14.md): Gemensam sammanfattning av WIF, IAM, OS Login och övrigt säkerhetsarbete den 14 september.
 - [docs/team_work_summary_2026-09-15.md](docs/team_work_summary_2026-09-15.md): Gemensam sammanfattning av Metadata Service, Headscale, Tailscale och brandväggsarbetet den 15 september.
 - [docs/team_work_summary_2026-09-17.md](docs/team_work_summary_2026-09-17.md): Gemensam sammanfattning av `primary`, subnet routing, direkt routing och Split DNS den 17 september.
 - [docs/team_work_summary_2026-09-24.md](docs/team_work_summary_2026-09-24.md): Gemensam sammanfattning av MagicDNS-posten för `company-website` och dagens verifieringar.
+- [docs/team_work_summary_2026-10-15.md](docs/team_work_summary_2026-10-15.md):
+  Flytten till Comerits GCP-projekt, IAP/OS Login och åtkomststädning.
 - [members/](members/): Personliga dokumentationsytor för gruppmedlemmarnas anteckningar, loggar och underlag.
 
 ## Arbetsflöde
@@ -99,7 +108,11 @@ Exempel på säkerhetsområden att granska:
 - CI/CD-secrets
 - Kodgranskning och branch protection
 
-## Nuvarande Status
+## Historik: tidigare `itsx25-lab`-miljö
+
+> Avsnittet nedan bevarar den tidigare labbmiljöns beslut och verifieringar.
+> Det är inte den aktuella anslutnings- eller driftstandarden efter flytten
+> till `itsx25-comerit`.
 
 - Bootstrap-resurser har skapats i GCP.
 - Terraform state-bucket finns: `team2-tfstate-dd541fba`.
@@ -126,9 +139,24 @@ Exempel på säkerhetsområden att granska:
 - Pull requests kräver två approvals.
 - `Format & Validate` krävs som statuscheck.
 - Gruppens member-branches finns på GitHub.
-- Direkt åtkomst till privata resurser och Spectre sker normalt via personliga
-  Tailscale-noder, annonserade subnet-rutter och Split DNS. SOCKS5 är endast en
-  avgränsad reservmetod.
+- Direkt åtkomst till privata resurser och Spectre skedde i den tidigare
+  miljön via personliga Tailscale-noder, annonserade subnet-rutter och Split
+  DNS. SOCKS5 var en avgränsad reservmetod.
+
+## Nuvarande status: Comerits GCP-miljö
+
+- Terraform-state och CI/CD är ompekade till Team 2:s förberedda resurser i
+  `itsx25-comerit`.
+- GitHub Actions använder Workload Identity Federation, inte lokala service
+  account-nycklar.
+- Deployen från `main` är verifierat grön:
+  [Deploy Infrastructure #38710912767](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/38710912767).
+- `team2-jumphost` och `team2-primary` kör i `europe-north2-b` med den
+  godkända publika imagen `debian-cloud/debian-12`.
+- Administrativ åtkomst sker med OS Login via IAP. Direkt SSH mot publik IP
+  används inte.
+- Dennis GitHub- och OS Login-åtkomst togs bort och verifierades med en grön
+  deploy: [Deploy Infrastructure #38737868779](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/38737868779).
 
 ## Viktigt
 
@@ -171,8 +199,8 @@ Kontrollera alltid namn och status - aldrig Secret-värden - enligt följande:
 1. `deploy.yml` ska ha `id-token: write` och använda `vars.WORKLOAD_IDENTITY_PROVIDER`
    samt `vars.CICD_SERVICE_ACCOUNT`.
 2. En lyckad `Deploy Infrastructure`-körning ska finnas efter Terraformändringar.
-   Den senaste verifierade körningen från `main` slutfördes 2026-09-26:
-   [GitHub Actions #36246127653](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/36246127653).
+   Den senaste verifierade körningen från `main` slutfördes 2026-10-15:
+   [GitHub Actions #38737868779](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/38737868779).
 3. Pull request-kontrollen ska vara grön. Den verifierar Terraform-format och
    validering, men utför ingen deploy.
 4. Om WIF, Variables eller en Secret ändras ska teamet först granska ändringen,
@@ -194,13 +222,17 @@ Den fullständiga rutinen finns i
    branch, pull request och granskning. Teamet ska först bedöma om
    `roles/compute.osLogin` räcker eller om administrativ
    `roles/compute.osAdminLogin` verkligen behövs.
-4. **Anslutning:** Efter Tailnet-registrering sker medlemmarnas SSH via
-   jumphostens Tailscale-adress enligt den gemensamma guiden. Publik SSH är
-   begränsad till instruktörsnätet.
+4. **Anslutning:** När Comerit har öppnat åtkomst efter en grön deploy ansluter
+   medlemmar via IAP och `gcloud compute ssh --tunnel-through-iap` enligt den
+   gemensamma guiden. Publik SSH används inte.
 5. **Privata nycklar:** Den privata nyckeln får aldrig delas, skickas i chattar
    eller commitas till GitHub.
 
-## Aktuell status: Headscale och Tailscale
+## Historik: Headscale och Tailscale i tidigare miljö
+
+> Följande detaljer gäller den tidigare `itsx25-lab`-miljön. Headscale,
+> Tailscale, Split DNS och SOCKS5 är inte verifierade som standardväg på de
+> nybyggda VM:erna i `itsx25-comerit`.
 
 - Headscale `v0.29.3` är installerat och aktivt på jumphosten.
 - Headscale använder `https://team2.itsx25.chas-lab.dev` som serveradress,
