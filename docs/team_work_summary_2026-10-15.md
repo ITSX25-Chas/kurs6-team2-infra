@@ -37,7 +37,9 @@ state-backend pekas om till Team 2:s nya resurser.
 - Deploy-workflowet för [PR #87](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/38710912767)
   avslutades grönt.
 - Båda Team 2-VM:erna skapades i `itsx25-comerit`.
-- IAP-anslutning och OS Login till `team2-primary` fungerade.
+- IAP-anslutning och OS Login fungerar för både `team2-primary` och
+  `team2-jumphost`. Båda anslutningarna verifierades från en interaktiv
+  VS Code-terminal med Team 2:s Chas-konto.
 - Deploy-workflowet för [PR #88](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/38737868779)
   avslutades grönt.
 - Terraform förstörde Dennis `compute.osAdminLogin`-behörighet på både
