@@ -57,7 +57,10 @@ resource "google_compute_firewall" "allow_k3s" {
     ports    = ["6443"]
   }
 
-  source_ranges = ["10.0.2.0/24"]
+  # IAP traffic is authorized by IAM in addition to this network rule. The
+  # range allows a future, least-privilege CI/CD tunnel without exposing the
+  # Kubernetes API directly to the internet.
+  source_ranges = [local.subnet_cidr, "35.235.240.0/20"]
   target_tags   = ["primary"]
 }
 
@@ -198,21 +201,11 @@ resource "google_compute_instance" "primary" {
   metadata = {
     enable-oslogin         = "TRUE"
     block-project-ssh-keys = true
-    startup-script         = <<-EOT
-      #!/bin/bash
-      set -e
-
-      if ! swapon --show | grep -q "/swapfile"; then
-        fallocate -l 1G /swapfile
-        chmod 600 /swapfile
-        mkswap /swapfile
-        swapon /swapfile
-        echo '/swapfile none swap sw 0 0' >> /etc/fstab
-      fi
-
-      echo 'vm.swappiness=20' > /etc/sysctl.d/01-swappiness.conf
-      sysctl --system
-    EOT
+    startup-script = templatefile("${path.module}/scripts/bootstrap-primary.sh.tftpl", {
+      k3s_version        = var.k3s_version
+      primary_private_ip = cidrhost(local.subnet_cidr, 3)
+      team_id            = var.team_id
+    })
   }
 }
 

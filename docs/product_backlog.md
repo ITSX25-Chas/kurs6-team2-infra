@@ -31,11 +31,12 @@ Syftet är att samla säkerhetsrisker, förbättringar och dokumentationsbehov p
 | PB-12 | [#41](https://github.com/ITSX25-Chas/kurs6-team2-infra/issues/41) | Dokumentera och gör Headscale-installationen reproducerbar | Medel | In progress | Jumphost, Headscale, `docs/` |
 | PB-13 | [#51](https://github.com/ITSX25-Chas/kurs6-team2-infra/issues/51) | Aktivera `primary` och verifiera subnet routing | Hög | Done | `main.tf`, Headscale, routing |
 | PB-14 | [#52](https://github.com/ITSX25-Chas/kurs6-team2-infra/issues/52) | Inför och verifiera Headscale ACL-policy | Hög | In progress | Headscale, ACL, åtkomsttest |
+| PB-15 | [#90](https://github.com/ITSX25-Chas/kurs6-team2-infra/issues/90) | Provisionera reproducerbar K3s-plattform i Comerits miljö | Hög | In progress | `main.tf`, `scripts/`, `docs/` |
 
 ## Första Prioritering
 
-Nuvarande prioritering är PB-02, PB-08, PB-09, PB-12 och PB-14 eftersom de
-berör åtkomst, autentisering, reproducerbar drift och nästa workshopsteg.
+Nuvarande prioritering är PB-02, PB-08, PB-09, PB-12, PB-14 och PB-15 eftersom
+de berör åtkomst, autentisering, reproducerbar drift och nästa workshopsteg.
 
 PB-02 har två GitHub issues eftersom Lasse också skapade en mer konkret observation om `allAuthenticatedUsers` i issue #13. Den bör hanteras tillsammans med PB-02/PB-07 i reviewarbetet.
 

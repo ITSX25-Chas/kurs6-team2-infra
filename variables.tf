@@ -26,6 +26,12 @@ variable "team_id" {
   type        = number
 }
 
+variable "k3s_version" {
+  description = "Pinned K3s version installed on the Team 2 primary node"
+  type        = string
+  default     = "v1.37.0+k3s1"
+}
+
 variable "instructor_cidr" {
   description = "The CIDR range for the instructor's network"
   type        = string
