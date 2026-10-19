@@ -8,6 +8,12 @@ on:
       - ".terraform.lock.hcl"
       - ".github/workflows/deploy.yml"
   workflow_dispatch:
+    inputs:
+      reset_primary_for_bootstrap:
+        description: "Starta om endast team2-primary efter apply så att dess startup-script körs"
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: terraform-production
@@ -47,3 +53,13 @@ jobs:
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
+
+      - name: Restart primary for approved K3s bootstrap
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.reset_primary_for_bootstrap }}
+        run: |
+          gcloud compute instances reset team2-primary \
+            --project itsx25-comerit \
+            --zone europe-north2-b
+          gcloud compute instances wait-until-running team2-primary \
+            --project itsx25-comerit \
+            --zone europe-north2-b
