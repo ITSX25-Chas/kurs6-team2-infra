@@ -35,6 +35,8 @@ Syftet är att arbeta med molninfrastruktur i Google Cloud Platform (GCP), grans
   Gemensam säker guide för Git, GCP, Terraform, OS Login och SSH via IAP i
   Comerits miljö. Tidigare Headscale/Tailscale- och SOCKS5-instruktioner är
   markerade som historiska.
+- [docs/comerit_k3s_platform.md](docs/comerit_k3s_platform.md): Första,
+  reproducerbara steget för K3s på `team2-primary` i Comerits miljö.
 - [docs/product_backlog.md](docs/product_backlog.md): Backlog med säkerhetsrisker, förbättringar och status.
 - [docs/team_work_summary_2026-09-08.md](docs/team_work_summary_2026-09-08.md): Gemensam sammanfattning av dagens arbete, verifieringar och nästa steg.
 - [docs/team_work_summary_2026-09-14.md](docs/team_work_summary_2026-09-14.md): Gemensam sammanfattning av WIF, IAM, OS Login och övrigt säkerhetsarbete den 14 september.
