@@ -21,9 +21,11 @@ RBAC och CI/CD-kubeconfig hanteras i efterföljande, separata ändringar.
   tekniska statusrader till `/var/log/team2-primary-startup.log`.
 - Startup-scriptet körs när primary startar. Deploy-workflowet har därför ett
   manuellt valt alternativ, `reset_primary_for_bootstrap`, som efter Terraform
-  apply startar om endast `team2-primary`. Alternativet är avstängt som
-  standard och körs aldrig vid en vanlig push. Det raderar inte VM:n eller
-  ändrar Terraform-staten, men gör att den redan tilldelade bootstrapen körs.
+  apply säkerställer att `team2-jumphost` kör, och startar sedan om endast
+  `team2-primary`. Primary använder jumphosten som NAT-gateway för att hämta
+  K3s. Alternativet är avstängt som standard och körs aldrig vid en vanlig
+  push. Det raderar inte VM:erna eller ändrar Terraform-staten, men gör att
+  den redan tilldelade bootstrapen körs med nätåtkomst.
 - Brandväggen tillåter K3s API från Team 2:s privata subnät och Googles
   IAP-intervall. IAP kräver dessutom en separat IAM-kontroll; regeln gör inte
   API:t publikt.

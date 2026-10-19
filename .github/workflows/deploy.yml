@@ -57,9 +57,45 @@ jobs:
       - name: Restart primary for approved K3s bootstrap
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.reset_primary_for_bootstrap }}
         run: |
+          project="itsx25-comerit"
+          zone="europe-north2-b"
+
+          wait_for_running() {
+            local instance="$1"
+
+            for attempt in $(seq 1 24); do
+              status="$(gcloud compute instances describe "$instance" \
+                --project "$project" \
+                --zone "$zone" \
+                --format='value(status)')"
+
+              if [ "$status" = "RUNNING" ]; then
+                echo "$instance is running"
+                return 0
+              fi
+
+              echo "Waiting for $instance; current status: $status"
+              sleep 5
+            done
+
+            echo "$instance did not reach RUNNING within two minutes" >&2
+            return 1
+          }
+
+          jumphost_status="$(gcloud compute instances describe team2-jumphost \
+            --project "$project" \
+            --zone "$zone" \
+            --format='value(status)')"
+
+          if [ "$jumphost_status" != "RUNNING" ]; then
+            gcloud compute instances start team2-jumphost \
+              --project "$project" \
+              --zone "$zone"
+          fi
+
+          wait_for_running team2-jumphost
+
           gcloud compute instances reset team2-primary \
-            --project itsx25-comerit \
-            --zone europe-north2-b
-          gcloud compute instances wait-until-running team2-primary \
-            --project itsx25-comerit \
-            --zone europe-north2-b
+            --project "$project" \
+            --zone "$zone"
+          wait_for_running team2-primary
