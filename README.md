@@ -151,12 +151,16 @@ Exempel på säkerhetsområden att granska:
   `itsx25-comerit`.
 - GitHub Actions använder Workload Identity Federation, inte lokala service
   account-nycklar.
-- Deployen från `main` är verifierat grön:
-  [Deploy Infrastructure #38710912767](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/38710912767).
+- Deployen från `main` är verifierat grön. Den senaste verifierade
+  K3s-bootstrapen kördes i
+  [Deploy Infrastructure #39395769638](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/39395769638).
 - `team2-jumphost` och `team2-primary` kör i `europe-north2-b` med den
   godkända publika imagen `debian-cloud/debian-12`.
 - Administrativ åtkomst sker med OS Login via IAP. Direkt SSH mot publik IP
   används inte.
+- K3s kör på `team2-primary`; tjänsten är `active`, noden är `Ready` och API:t
+  har verifierats via readiness endpoint. Ingress, Kubernetes-RBAC och
+  applikationsdeploy hanteras separat.
 - Dennis GitHub- och OS Login-åtkomst togs bort och verifierades med en grön
   deploy: [Deploy Infrastructure #38737868779](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/38737868779).
 
