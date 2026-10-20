@@ -46,6 +46,19 @@ RBAC och CI/CD-kubeconfig hanteras i efterföljande, separata ändringar.
 4. K3s API, kubeconfig, RBAC och nästa CI/CD-steg granskas i en ny PR innan
    applikationens workflow ändras.
 
+## Verifierat 2026-10-20
+
+- Den manuella [Deploy Infrastructure-körningen #39395769638](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/39395769638)
+  slutfördes utan fel. Den startade jumphosten och körde om primarys
+  startup-script med fungerande NAT-väg.
+- Via OS Login över IAP verifierades att `k3s` är `active`.
+- `sudo k3s kubectl get nodes -o wide` visade `team2-primary` som `Ready`.
+- `sudo k3s kubectl get --raw=/readyz` svarade `ok`.
+
+PB-15 och issue #90 är därmed klara. Nästa plattformssteg är en separat
+granskad ändring för ingress, begränsad Kubernetes-RBAC och deploy av
+`team2-company-website`.
+
 ## Källor
 
 - [K3s Quick-Start Guide](https://docs.k3s.io/quick-start): installationsskript,
