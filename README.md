@@ -159,8 +159,12 @@ Exempel på säkerhetsområden att granska:
 - Administrativ åtkomst sker med OS Login via IAP. Direkt SSH mot publik IP
   används inte.
 - K3s kör på `team2-primary`; tjänsten är `active`, noden är `Ready` och API:t
-  har verifierats via readiness endpoint. Ingress, Kubernetes-RBAC och
-  applikationsdeploy hanteras separat.
+  har verifierats via readiness endpoint. Applikationen driftsätts separat via
+  app-repots begränsade IAP- och Kubernetes-behörigheter.
+- Den 2026-10-26 verifierades appens pod och `/healthz` samt webbåtkomst via
+  IAP-tunnel. Inloggning har inte verifierats. Policy-controller, RBAC och
+  tillhörande konfiguration förbereddes manuellt och behöver kunna återskapas.
+  Ingress och den gamla DNS-vägen är inte verifierade i den nya miljön.
 - Dennis GitHub- och OS Login-åtkomst togs bort och verifierades med en grön
   deploy: [Deploy Infrastructure #38737868779](https://github.com/ITSX25-Chas/kurs6-team2-infra/actions/runs/38737868779).
 

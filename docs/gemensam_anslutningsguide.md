@@ -162,6 +162,39 @@ gcloud compute ssh team2-primary \
 Google Cloud hanterar OS Login-anslutningen. Dela aldrig privata nycklar,
 auth-tokens eller annat känsligt material.
 
+### Öppna Company Website via IAP
+
+Den här vägen verifierades den 2026-10-26. Den kräver personlig OS Login,
+IAP-åtkomst till primary och behörighet att använda `sudo k3s kubectl` där.
+Behörigheter kan skilja sig mellan medlemmar. Den tidigare Headscale- och
+DNS-vägen nedan hör till den gamla miljön.
+
+1. Anslut till primary med kommandot ovan och starta port forwarding där:
+
+```bash
+sudo k3s kubectl port-forward --address 127.0.0.1 -n default svc/company-website 7000:7000
+```
+
+2. Låt den terminalen vara öppen. Öppna en ny lokal terminal i VS Code och
+   starta en IAP-tunnel till samma maskin:
+
+```bash
+gcloud compute ssh team2-primary \
+  --project itsx25-comerit \
+  --zone europe-north2-b \
+  --tunnel-through-iap \
+  -- -N -L 127.0.0.1:17000:127.0.0.1:7000
+```
+
+3. Öppna `http://localhost:17000` i webbläsaren. IAP och SSH skyddar
+   transporten till VM:n; webbadressen på din egen dator använder HTTP.
+   Använd en betrodd dator och dela inte inloggningsuppgifter. Om port 17000
+   är upptagen kan du välja en annan lokal port i både kommandot och adressen.
+4. Avsluta båda kommandona med `Ctrl+C` när du är klar.
+
+Sidan öppnades vid kontrollen, men inloggning testades inte. Att sidan öppnas
+bevisar därför inte att alla applikationsfunktioner fungerar.
+
 ## Historisk miljö: Headscale, Tailscale och SOCKS5
 
 > Avsnitt 8-17 och den avslutande felsökningen nedan bevaras som historik från
