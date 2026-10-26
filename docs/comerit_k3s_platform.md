@@ -13,10 +13,10 @@ RBAC och CI/CD-kubeconfig hanteras i efterföljande, separata ändringar.
   pinnade versionen `v1.37.0+k3s1` av K3s om den saknas.
 - K3s konfigureras som en singelnods-server med ett unikt nodnamn och
   root-skyddad administrativ kubeconfig (`0600`).
-- Den inbyggda Traefik- och ServiceLB-installationen stängs av. Teamets
-  applikationsmanifest använder `ingressClassName: nginx`, så en NGINX
-  ingress-controller installeras och dokumenteras separat innan appen
-  driftsätts.
+- Den inbyggda Traefik- och ServiceLB-installationen stängs av. Appens
+  Ingress-manifest anger `ingressClassName: nginx`, men en fungerande
+  ingress-controller har inte verifierats i den nya miljön. Webbåtkomst sker
+  tills vidare via IAP och port forwarding.
 - Startup-scriptet väntar på K3s readiness endpoint och skriver bara
   tekniska statusrader till `/var/log/team2-primary-startup.log`.
 - Startup-scriptet körs när primary startar. Deploy-workflowet har därför ett
@@ -55,9 +55,21 @@ RBAC och CI/CD-kubeconfig hanteras i efterföljande, separata ändringar.
 - `sudo k3s kubectl get nodes -o wide` visade `team2-primary` som `Ready`.
 - `sudo k3s kubectl get --raw=/readyz` svarade `ok`.
 
-PB-15 och issue #90 är därmed klara. Nästa plattformssteg är en separat
-granskad ändring för ingress, begränsad Kubernetes-RBAC och deploy av
-`team2-company-website`.
+PB-15 och issue #90 markerades därmed som klara för K3s-basen.
+
+## Verifierat 2026-10-26
+
+- App-repots deploy var grön med WIF och IAP till K3s API. Den begränsade
+  ServiceAccounten `github-deployer` kunde uppdatera deploymenten men inte
+  läsa secrets.
+- Sigstore policy-controller, image-policy och enforcement-label sattes upp
+  manuellt. En dry-run av appens image godkändes och en BusyBox-image utan
+  matchande policy nekades. Full deploy efter aktivering återstår att testa.
+- Applikationspodden var `1/1 Running`, `/healthz` rapporterade frisk
+  databasanslutning och webbplatsen öppnades via IAP-tunnel. Inloggning är
+  ännu inte verifierad.
+- RBAC, applikationssecret och policystöd ingår inte i K3s-bootstrapen ovan.
+  Hur de återskapas och hur deployerns token roteras behöver dokumenteras.
 
 ## Källor
 
