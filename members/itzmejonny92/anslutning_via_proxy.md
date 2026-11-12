@@ -1,14 +1,38 @@
-# Anslutning till Spectre - aktuell metod och historisk proxy
+# Anslutning till Spectre - historisk proxyreferens
 
-> **Status 2026-09-24:** SOCKS5-metoden nedan är inaktuell som normal
-> anslutningsväg. Team 2 använder nu Headscale/Tailscale, annonserade
-> subnet-rutter och Split DNS. Ingen SSH-tunnel eller separat Opera-profil
-> behövs för vanlig åtkomst till Spectre.
+> **Status 2026-10-15:** Den här filen beskriver den tidigare
+> `itsx25-lab`-miljön. Team 2:s nuvarande administrativa åtkomst till VM:erna
+> i `itsx25-comerit` sker via OS Login och IAP, inte via Headscale, Tailscale
+> eller en lokal SOCKS5-proxy.
 
 Filnamnet behålls för att äldre dokumentlänkar inte ska brytas. Den gamla
 proxyvägen finns kvar längst ned som historisk referens.
 
-## Nuvarande lösning
+## Nuvarande standard för Team 2:s VM:er
+
+Logga in med ditt Chas-konto och anslut via IAP:
+
+```bash
+gcloud auth login
+gcloud compute ssh team2-jumphost \
+  --project itsx25-comerit \
+  --zone europe-north2-b \
+  --tunnel-through-iap
+```
+
+För direkt administrativ åtkomst till primary används samma mönster:
+
+```bash
+gcloud compute ssh team2-primary \
+  --project itsx25-comerit \
+  --zone europe-north2-b \
+  --tunnel-through-iap
+```
+
+Vanlig SSH mot en IP-adress är stängd i brandväggen. IAP är den kontrollerade
+vägen och kräver att Comerit först har öppnat IAP-åtkomst efter en grön deploy.
+
+## Historisk lösning
 
 | Tidigare | Nu |
 | --- | --- |
@@ -22,7 +46,7 @@ Spectre-adressen `10.0.0.2/32`. Split DNS skickar frågor för
 `itsx25.chas-lab.dev` till DNS-proxyn på jumphostens Tailnet-adress
 `100.64.0.2`.
 
-## Windows och Opera GX
+## Historiskt: Windows och Opera GX
 
 Windows-klienten ska vara registrerad under rätt personlig Headscale-användare
 och ansluten till `https://team2.itsx25.chas-lab.dev`. WSL och Windows är

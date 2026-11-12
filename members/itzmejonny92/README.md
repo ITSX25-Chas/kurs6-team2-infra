@@ -19,6 +19,8 @@ flagganalys.
 | [Arbetssammanfattning 2026-09-17](work_summary_2026-09-17.md) | Individuell sammanfattning av `primary`, subnet routing, direkt routing och Split DNS. |
 | [Arbetssammanfattning 2026-09-22](work_summary_2026-09-22.md) | Pedagogisk analys av LookingGlass, Metadata Service och Cloud Storage-versionering. |
 | [Samlad flagganalys 2026-09-24](flaggar_individuell_sammanfattning_2026-09-24.md) | Samlad status, lösningsmetod och defensiva lärdomar för kursens åtta flaggområden. |
+| [Arbetssammanfattning 2026-10-13](work_summary_2026-10-13_repo_flytt.md) | Individuell sammanfattning av repoflytten till `ITSX25-Chas` och verifierad CI/CD. |
+| [Arbetssammanfattning 2026-10-15](work_summary_2026-10-15_comerit_gcp.md) | Flytt till Comerits GCP-projekt, IAP/OS Login och åtkomststädning. |
 | [Gemensam arbetssammanfattning 2026-09-24](../../docs/team_work_summary_2026-09-24.md) | MagicDNS för `company-website`, Headscale-verifiering och återställningsinformation. |
 | [Gemensam arbetssammanfattning 2026-09-08](../../docs/team_work_summary_2026-09-08.md) | Gruppens gemensamma resultat, bidrag, säkerhetsstatus och nästa steg. |
 | [Gemensam arbetssammanfattning 2026-09-14](../../docs/team_work_summary_2026-09-14.md) | Teamets verifierade säkerhetsarbete och aktuella status. |
@@ -34,7 +36,13 @@ flagganalys.
 
 ## Aktuell personlig status
 
-Senast verifierad: 2026-09-24.
+Senast verifierad: 2026-10-15.
+
+- Infra-deployen är grön i Comerits GCP-projekt `itsx25-comerit`.
+- `team2-jumphost` och `team2-primary` använder den godkända publika imagen
+  `debian-cloud/debian-12`.
+- IAP och OS Login till `team2-primary` är verifierade utan publik SSH.
+- Dennis GitHub- och OS Login-åtkomst till Team 2:s infrastruktur är borttagen.
 
 - OS Login fungerar med Jonnys personliga Google-identitet och SSH-nyckel.
 - Metadata Service och jumphostens service account har verifierats utan att
@@ -74,6 +82,8 @@ Senast verifierad: 2026-09-24.
 | 2026-09-24 | Allt flaggarbete sammanställdes med separat status för identifiering och Spectre-inlämning. | Granska dokumentet med gruppen och fortsätt därefter med SQLi-flaggan. |
 | 2026-09-24, Workshop 3.5-4 | Headscales MagicDNS-post för `company-website` lades till, tjänstens reload-beteende analyserades och åtkomsten verifierades. | PR #72 är mergad; låt fler medlemmar verifiera DNS-posten. |
 | 2026-09-24, CI/IAM | Återkommande Terraform-fel analyserades, projekt-IAM flyttades säkert från root till bootstrap och en fullständig GitHub Actions-deploy verifierades via WIF. PR #75 mergades, deployen från `main` lyckades och efterkontrollen gav `No changes`. | Följ upp den lokala OS Login-nyckeln inför framtida interaktiva K3s-kontroller. |
+| 2026-10-13 | Infra- och apprepona flyttades till `ITSX25-Chas`. WIF, appdeploy, Kubernetes-rollout och health endpoint verifierades efter flytten. | Fortsätt använda de nya kanoniska repo-adresserna och följ upp gammal WIF efter stabiliseringsperioden. |
+| 2026-10-15 | Infrastrukturdriften flyttades till Comerits GCP-projekt. Publik Debian 12-image, IAP och OS Login verifierades. Dennis åtkomst togs bort från GitHub och båda VM:erna via Terraform. | Håll medlemslistorna i GitHub och Terraform synkroniserade. |
 
 ## Viktigt
 

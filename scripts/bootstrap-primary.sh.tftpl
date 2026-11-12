@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+exec > >(tee -a /var/log/team${team_id}-primary-startup.log) 2>&1
+
+if ! swapon --show | grep -q '/swapfile'; then
+  fallocate -l 1G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
+
+echo 'vm.swappiness=20' > /etc/sysctl.d/01-swappiness.conf
+sysctl --system
+
+install -d -m 0700 /etc/rancher/k3s
+cat > /tmp/k3s-config.yaml <<'EOF'
+node-name: "team${team_id}-primary"
+write-kubeconfig-mode: "0600"
+tls-san:
+  - "${primary_private_ip}"
+disable:
+  - traefik
+  - servicelb
+EOF
+
+config_changed=false
+if ! cmp -s /tmp/k3s-config.yaml /etc/rancher/k3s/config.yaml 2>/dev/null; then
+  install -m 0600 /tmp/k3s-config.yaml /etc/rancher/k3s/config.yaml
+  config_changed=true
+fi
+rm -f /tmp/k3s-config.yaml
+
+if ! command -v k3s >/dev/null 2>&1; then
+  apt-get update
+  apt-get install -y --no-install-recommends ca-certificates curl
+  curl --fail --silent --show-error --location https://get.k3s.io -o /tmp/install-k3s.sh
+  INSTALL_K3S_VERSION="${k3s_version}" sh /tmp/install-k3s.sh server
+  rm -f /tmp/install-k3s.sh
+elif [ "$config_changed" = true ]; then
+  systemctl restart k3s
+else
+  systemctl enable --now k3s
+fi
+
+for attempt in $(seq 1 30); do
+  if k3s kubectl get --raw=/readyz >/dev/null 2>&1; then
+    echo "K3s API is ready"
+    exit 0
+  fi
+
+  sleep 5
+done
+
+systemctl status k3s --no-pager || true
+echo "K3s did not become ready within 150 seconds" >&2
+exit 1
